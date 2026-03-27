@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    var categoryIcons = new Dictionary<int, string> {
+        { 1, "fa-couch" },        // Phòng khách
+        { 2, "fa-bed" },          // Phòng ngủ
+        { 3, "fa-utensils" },     // Phòng ăn
+        { 4, "fa-laptop" },       // Phòng làm việc
+        { 5, "fa-paint-brush" }   // Trang trí
+    };
+}
+
+<section class="hero">
+    <div class="container">
+        <h1>Nội thất cao cấp<br>cho không gian của bạn</h1>
+        <p>Khám phá hàng trăm mẫu nội thất hiện đại, tinh tế và bền đẹp</p>
+        <a asp-controller="Product" asp-action="Index" class="btn-primary">Mua sắm ngay</a>
+    </div>
+</section>
+
+<section class="categories-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Danh mục sản phẩm</h2>
+            <p>Tìm kiếm nội thất theo không gian của bạn</p>
+        </div>
+        <div class="categories-grid">
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <a asp-controller="Product" asp-action="Index"
+                   asp-route-categoryId="@cat.CategoryID" class="category-card">
+                    <div class="category-icon">
+                        <i class="fa-solid @(categoryIcons.ContainsKey(cat.CategoryID)
+                                              ? categoryIcons[cat.CategoryID] : "fa-box")"></i>
+                </div>
+                <div class="category-name">@cat.CategoryName</div>
+            </a>
+                        }
+        </div>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Sản phẩm mới nhất</h2>
+            <p>Những mẫu nội thất vừa cập nhật</p>
+        </div>
+        <div class="products-grid">
+            @foreach (var p in ViewBag.NewestProducts)
+            {
+                <div class="product-card">
+                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                        <div class="product-img-wrap">
+                            <img class="product-img" src="@p.ImageURL" alt="@p.ProductName"
+                                 onerror="this.src='/images/no-image.jpg'" />
+                        </div>
+                    </a>
+                    <div class="product-body">
+                        <div class="product-category">@p.CategoryName</div>
+                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                            <div class="product-name">@p.ProductName</div>
+                        </a>
+                        <div class="product-price">
+                            <span class="price-sale">@p.SalePrice.ToString("N0") ₫</span>
+                            @if (p.Discount > 0)
+                            {
+                                <span class="price-old">@p.Price.ToString("N0") ₫</span>
+                                <span class="badge-discount">-@p.Discount%</span>
+                            }
+                        </div>
+                        <div class="product-actions">
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@p.ProductID" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn-primary">Thêm giỏ</button>
+                            </form>
+                            <a asp-controller="Product" asp-action="Detail"
+                               asp-route-id="@p.ProductID" class="btn-outline">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@if (((IEnumerable<dynamic>)ViewBag.DiscountedProducts).Any())
+{
+    <section class="discount-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Đang giảm giá</h2>
+                <p>Ưu đãi có thời hạn — mua ngay kẻo lỡ!</p>
+            </div>
+            <div class="products-grid">
+                @foreach (var p in ViewBag.DiscountedProducts)
+                {
+                    <div class="product-card">
+                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                            <div class="product-img-wrap">
+                                <img class="product-img" src="@p.ImageURL" alt="@p.ProductName"
+                                     onerror="this.src='/images/no-image.jpg'" />
+                            </div>
+                        </a>
+                        <div class="product-body">
+                            <div class="product-category">@p.CategoryName</div>
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                                <div class="product-name">@p.ProductName</div>
+                            </a>
+                            <div class="product-price">
+                                <span class="price-sale">@p.SalePrice.ToString("N0") ₫</span>
+                                <span class="price-old">@p.Price.ToString("N0") ₫</span>
+                                <span class="badge-discount">-@p.Discount%</span>
+                            </div>
+                            <div class="product-actions">
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@p.ProductID" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn-primary">Thêm giỏ</button>
+                                </form>
+                                <a asp-controller="Product" asp-action="Detail"
+                                   asp-route-id="@p.ProductID" class="btn-outline">Chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
