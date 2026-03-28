@@ -1,0 +1,57 @@
+﻿@model FurnitureShop.DTO.ProductDTO
+@{
+    ViewData["Title"] = Model.ProductName;
+}
+
+<section class="detail-section">
+    <div class="container">
+        <div class="detail-grid">
+            <div class="detail-img">
+                <img src="@Model.ImageURL" alt="@Model.ProductName"
+                     onerror="this.src='/images/no-image.jpg'" />
+            </div>
+            <div class="detail-info">
+                <div class="detail-category">@Model.CategoryName</div>
+                <h1 class="detail-name">@Model.ProductName</h1>
+                <div class="detail-price">
+                    <span class="price-sale">@Model.SalePrice.ToString("N0") ₫</span>
+                    @if (Model.Discount > 0)
+                    {
+                        <span class="price-old">@Model.Price.ToString("N0") ₫</span>
+                        <span class="badge-discount">-@Model.Discount%</span>
+                    }
+                </div>
+                <div class="stock-info">
+                    Tình trạng:
+                    @if (Model.Stock > 0)
+                    {
+                        <span class="in-stock">Còn hàng (@Model.Stock sản phẩm)</span>
+                    }
+                    else
+                    {
+
+                        <span class="out-stock">Hết hàng</span>
+                    }
+                </div>
+                <div class="detail-desc">@Model.Description</div>
+                @if (Model.Stock > 0)
+                {
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@Model.ProductID" />
+                        <div class="qty-group">
+                            <label>Số lượng:</label>
+                            <input class="qty-input" type="number" name="quantity"
+                                   value="1" min="1" max="@Model.Stock" />
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding:14px 40px;font-size:15px">
+                            Thêm vào giỏ hàng
+                        </button>
+                    </form>
+                }
+                <div style="margin-top:20px">
+                    <a asp-controller="Product" asp-action="Index" class="btn-outline">← Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
