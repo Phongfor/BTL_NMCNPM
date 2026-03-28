@@ -1,0 +1,63 @@
+﻿@model List<FurnitureShop.DTO.OrderDTO>
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<section class="orders-section">
+    <div class="container">
+        <h2 style="font-size:28px;color:var(--brown);margin-bottom:28px">Đơn hàng của tôi</h2>
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Ngày đặt</th>
+                        <th>Địa chỉ giao</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td><strong>#@order.OrderID</strong></td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@order.ShipAddress</td>
+                            <td><strong>@order.TotalAmount.ToString("N0") ₫</strong></td>
+                            <td>
+                                @{
+                                    var sc = order.Status switch
+                                    {
+                                        "Chờ xác nhận" => "status-cho",
+                                        "Đang xử lý" => "status-xu-ly",
+                                        "Đang giao" => "status-giao",
+                                        "Đã giao" => "status-xong",
+                                        "Hủy" => "status-huy",
+                                        _ => "status-cho"
+                                    };
+                                }
+                                <span class="status-badge @sc">@order.Status</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Order" asp-action="Detail"
+                                   asp-route-id="@order.OrderID"
+                                   class="btn-outline" style="padding:6px 14px;font-size:12px">Xem</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="text-align:center;padding:60px 0;color:var(--text-light)">
+                <p>Bạn chưa có đơn hàng nào.</p>
+                <a asp-controller="Product" asp-action="Index"
+                   class="btn-primary" style="display:inline-block;margin-top:16px">Mua sắm ngay</a>
+            </div>
+        }
+    </div>
+</section>
