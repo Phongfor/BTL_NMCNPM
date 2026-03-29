@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Đặt hàng";
+}
+
+<section class="checkout-section">
+    <div class="container">
+        <h2 style="font-size:28px;color:var(--brown);margin-bottom:28px">Xác nhận đơn hàng</h2>
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-msg">@ViewBag.Error</div>
+        }
+        <div class="checkout-layout">
+            <div>
+                <div class="card-box">
+                    <h3>Thông tin giao hàng</h3>
+                    <form asp-controller="Order" asp-action="Checkout" method="post">
+                        <div class="form-group">
+                            <label>Địa chỉ giao hàng <span style="color:red">*</span></label>
+                            <input type="text" name="shipAddress"
+                                   placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Ghi chú</label>
+                            <textarea name="note" placeholder="Gọi trước khi giao..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding:14px 36px;font-size:15px">
+                            Xác nhận đặt hàng
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                <div class="card-box">
+                    <h3>Đơn hàng của bạn</h3>
+                    <div class="order-items-list">
+                        @foreach (var item in ViewBag.Cart)
+                        {
+                            <div class="order-item">
+                                <img src="@item.ImageURL" alt="@item.ProductName"
+                                     onerror="this.src='/images/no-image.jpg'" />
+                                <div class="order-item-info">
+                                    <div class="order-item-name">@item.ProductName</div>
+                                    <div class="order-item-price">
+                                        @item.Price.ToString("N0") ₫ × @item.Quantity
+                                    </div>
+                                </div>
+                                <strong>@item.SubTotal.ToString("N0") ₫</strong>
+                            </div>
+                        }
+                    </div>
+                    <div style="border-top:2px solid var(--brown);margin-top:16px;padding-top:14px;
+                                display:flex;justify-content:space-between;
+                                font-size:18px;font-weight:700;color:var(--brown)">
+                        <span>Tổng cộng:</span>
+                        <span>@ViewBag.Total.ToString("N0") ₫</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
