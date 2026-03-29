@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FurnitureShop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-inner">
+            <a class="logo" asp-controller="Home" asp-action="Index">
+                <img src="/images/logo.png" alt="FurnitureShop" style="height:100px;object-fit:contain;" />
+            </a>
+            <nav class="nav">
+                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
+            </nav>
+            <div class="header-actions">
+                <a asp-controller="Cart" asp-action="Index" class="cart-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1" />
+                        <circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    @if ((ViewBag.CartCount ?? 0) > 0)
+                    {
+                        <span class="cart-count">@ViewBag.CartCount</span>
+                    }
+                </a>
+                @if (Context.Session.GetString("FullName") != null)
+                {
+                    <div class="user-menu">
+                        <span class="user-name">@Context.Session.GetString("FullName")</span>
+                        <div class="dropdown">
+                            <a asp-controller="Order" asp-action="MyOrders">Đơn hàng của tôi</a>
+                            <a asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn-outline">Đăng nhập</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn-primary">Đăng ký</a>
+                }
+            </div>
+        </div>
+    </header>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">@TempData["Error"]</div>
+    }
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-col">
+                <div class="footer-logo">FurnitureShop</div>
+                <p>Nội thất cao cấp, thiết kế hiện đại<br>cho không gian sống của bạn.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Danh mục</h4>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryId="1">Phòng khách</a>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryId="2">Phòng ngủ</a>
+                <a asp-controller="Product" asp-action="Index" asp-route-categoryId="3">Phòng ăn</a>
+            </div>
+            <div class="footer-col">
+                <h4>Hỗ trợ</h4>
+                <a href="#">Chính sách đổi trả</a>
+                <a href="#">Hướng dẫn mua hàng</a>
+                <a href="#">Liên hệ</a>
+            </div>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <p>Email: contact@furnitureshop.com</p>
+                <p>Hotline: 1800 1234</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FurnitureShop. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
