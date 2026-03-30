@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-label">Tổng sản phẩm</div>
+        <div class="stat-value">@ViewBag.TotalProducts</div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-label">Tổng đơn hàng</div>
+        <div class="stat-value">@ViewBag.TotalOrders</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-label">Doanh thu (đã giao)</div>
+        <div class="stat-value" style="font-size:20px">@ViewBag.TotalRevenue.ToString("N0") ₫</div>
+    </div>
+    <div class="stat-card red">
+        <div class="stat-label">Tổng khách hàng</div>
+        <div class="stat-value">@ViewBag.TotalUsers</div>
+    </div>
+</div>
+
+<div class="admin-table-wrap">
+    <div class="admin-table-header">
+        <h3>5 đơn hàng mới nhất</h3>
+        <a asp-area="Admin" asp-controller="OrderAdmin" asp-action="Index" class="btn-primary-sm">
+            Xem tất cả
+        </a>
+    </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in ViewBag.RecentOrders)
+            {
+                <tr>
+                    <td><strong>#@o.OrderID</strong></td>
+                    <td>@o.FullName</td>
+                    <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@o.TotalAmount.ToString("N0") ₫</td>
+                    <td>
+                        @{
+                            var sc = o.Status switch
+                            {
+                                "Chờ xác nhận" => "status-cho",
+                                "Đang xử lý" => "status-xu-ly",
+                                "Đang giao" => "status-giao",
+                                "Đã giao" => "status-xong",
+                                "Hủy" => "status-huy",
+                                _ => "status-cho"
+                            };
+                        }
+                        <span class="status-badge @sc">@o.Status</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

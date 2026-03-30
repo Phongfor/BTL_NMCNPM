@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="admin-wrapper">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                 FurnitureShop
+                <div style="font-size:11px;opacity:.6;font-weight:300;margin-top:2px">Admin Panel</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/Admin/Dashboard/Index"> Dashboard</a>
+                <a href="/Admin/ProductAdmin/Index"> Sản phẩm</a>
+                <a href="/Admin/CategoryAdmin/Index"> Danh mục</a>
+                <a href="/Admin/OrderAdmin/Index"> Đơn hàng</a>
+                <a href="/Admin/UserAdmin/Index"> Tài khoản</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/">&#8592; Về trang chủ</a>
+                <a href="/Account/Logout">&#8594; Đăng xuất</a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="admin-main">
+            <header class="admin-header">
+                <div class="admin-header-title">@ViewData["Title"]</div>
+                <div class="admin-user">
+                    Xin chào, <strong>@Context.Session.GetString("FullName")</strong>
+                </div>
+            </header>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="admin-alert success">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="admin-alert error">@TempData["Error"]</div>
+            }
+
+            <div class="admin-content">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
