@@ -1,0 +1,66 @@
+﻿@model FurnitureShop.DTO.OrderDTO
+@{
+    ViewData["Title"] = $"Đơn hàng #{Model.OrderID}";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div style="display:grid;grid-template-columns:1fr 340px;gap:24px">
+    <div class="card-admin">
+        <h3>Chi tiết sản phẩm</h3>
+        <table class="admin-table">
+            <thead>
+                <tr><th>Sản phẩm</th><th>Đơn giá</th><th>SL</th><th>Thành tiền</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <img src="@item.ImageURL" class="product-thumb"
+                                     onerror="this.src='/images/no-image.jpg'" />
+                                @item.ProductName
+                            </div>
+                        </td>
+                        <td>@item.UnitPrice.ToString("N0") ₫</td>
+                        <td>@item.Quantity</td>
+                        <td><strong>@item.SubTotal.ToString("N0") ₫</strong></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div style="text-align:right;margin-top:16px;font-size:18px;font-weight:700;color:#5C3317">
+            Tổng: @Model.TotalAmount.ToString("N0") ₫
+        </div>
+    </div>
+
+    <div>
+        <div class="card-admin" style="margin-bottom:20px">
+            <h3>Thông tin đơn hàng</h3>
+            <p style="font-size:14px;line-height:2">
+                <strong>Mã đơn:</strong> #@Model.OrderID<br />
+                <strong>Khách hàng:</strong> @Model.FullName<br />
+                <strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")<br />
+                <strong>Địa chỉ:</strong> @Model.ShipAddress<br />
+                <strong>Ghi chú:</strong> @(string.IsNullOrEmpty(Model.Note) ? "Không có" : Model.Note)
+            </p>
+        </div>
+
+        <div class="card-admin">
+            <h3>Cập nhật trạng thái</h3>
+            <form asp-area="Admin" asp-controller="OrderAdmin"
+                  asp-action="UpdateStatus" method="post">
+                <input type="hidden" name="orderId" value="@Model.OrderID" />
+                <div class="form-group">
+                    <select name="status">
+                        @foreach (var s in new[] { "Chờ xác nhận", "Đang xử lý", "Đang giao", "Đã giao", "Hủy" })
+                        {
+                            <option value="@s" selected="@(s == Model.Status ? "selected" : null)">@s</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary-sm">Cập nhật</button>
+            </form>
+        </div>
+    </div>
+</div>

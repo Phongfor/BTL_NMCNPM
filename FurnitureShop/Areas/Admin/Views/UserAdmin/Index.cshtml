@@ -1,0 +1,52 @@
+﻿@model List<FurnitureShop.DTO.UserDTO>
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-table-wrap">
+    <div class="admin-table-header"><h3>Danh sách tài khoản</h3></div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Ngày tạo</th>
+                <th>Quyền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.UserID</td>
+                    <td><strong>@u.FullName</strong></td>
+                    <td>@u.Email</td>
+                    <td>@u.Phone</td>
+                    <td>@u.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <span class="status-badge @(u.Role == "Admin" ? "status-xu-ly" : "status-xong")">
+                            @u.Role
+                        </span>
+                    </td>
+                    <td>
+                        <form asp-area="Admin" asp-controller="UserAdmin"
+                              asp-action="UpdateRole" method="post" style="display:flex;gap:6px">
+                            <input type="hidden" name="userId" value="@u.UserID" />
+                            <select name="role" style="padding:4px 8px;border:1px solid #ccc;border-radius:6px;font-size:12px">
+                                <option value="Customer" selected="@(u.Role == "Customer" ? "selected" : null)">Customer</option>
+                                <option value="Admin" selected="@(u.Role == "Admin" ? "selected" : null)">Admin</option>
+                            </select>
+                            <button type="submit" class="btn-sm btn-edit">Lưu</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

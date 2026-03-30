@@ -1,0 +1,51 @@
+﻿@model List<FurnitureShop.DTO.OrderDTO>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-table-wrap">
+    <div class="admin-table-header"><h3>Tất cả đơn hàng</h3></div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td><strong>#@o.OrderID</strong></td>
+                    <td>@o.FullName</td>
+                    <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@o.TotalAmount.ToString("N0") ₫</td>
+                    <td>
+                        @{
+                            var sc = o.Status switch
+                            {
+                                "Chờ xác nhận" => "status-cho",
+                                "Đang xử lý" => "status-xu-ly",
+                                "Đang giao" => "status-giao",
+                                "Đã giao" => "status-xong",
+                                "Hủy" => "status-huy",
+                                _ => "status-cho"
+                            };
+                        }
+                        <span class="status-badge @sc">@o.Status</span>
+                    </td>
+                    <td>
+                        <a asp-area="Admin" asp-controller="OrderAdmin"
+                           asp-action="Detail" asp-route-id="@o.OrderID"
+                           class="btn-sm btn-view">Xem</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
