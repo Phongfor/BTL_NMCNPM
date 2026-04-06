@@ -1,0 +1,81 @@
+﻿@model FurnitureShop.DTO.ProductDTO
+@{
+    ViewData["Title"] = Model.ProductID == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card-admin">
+    <h3>@ViewData["Title"]</h3>
+    <form asp-area="Admin" asp-controller="ProductAdmin" asp-action="Edit"
+          method="post" enctype="multipart/form-data" class="admin-form">
+        <input type="hidden" name="ProductID" value="@Model.ProductID" />
+        <input type="hidden" name="ImageURL" value="@Model.ImageURL" />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tên sản phẩm *</label>
+                <input type="text" name="ProductName" value="@Model.ProductName" required />
+            </div>
+            <div class="form-group">
+                <label>Danh mục *</label>
+                <select name="CategoryID">
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        <option value="@cat.CategoryID"
+                                selected="@(cat.CategoryID == Model.CategoryID ? "selected" : null)">
+                            @cat.CategoryName
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Giá (₫) *</label>
+                <input type="number" name="Price" value="@Model.Price" min="0" required />
+            </div>
+            <div class="form-group">
+                <label>Giảm giá (%)</label>
+                <input type="number" name="Discount" value="@Model.Discount" min="0" max="100" />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Tồn kho</label>
+                <input type="number" name="Stock" value="@Model.Stock" min="0" />
+            </div>
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select name="IsActive">
+                    <option value="true" selected="@(Model.IsActive ? "selected" : null)">Đang bán</option>
+                    <option value="false" selected="@(!Model.IsActive ? "selected" : null)">Ẩn</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Mô tả</label>
+            <textarea name="Description">@Model.Description</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Ảnh sản phẩm</label>
+            @if (!string.IsNullOrEmpty(Model.ImageURL))
+            {
+                <img src="@Model.ImageURL" style="width:100px;height:100px;object-fit:cover;border-radius:8px;margin-bottom:10px;display:block"
+                     onerror="this.style.display='none'" />
+            }
+            <input type="file" name="imageFile" accept="image/*" />
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:8px">
+            <button type="submit" class="btn-primary-sm">
+                @(Model.ProductID == 0 ? "Thêm sản phẩm" : "Lưu thay đổi")
+            </button>
+            <a asp-area="Admin" asp-controller="ProductAdmin" asp-action="Index"
+               class="btn-sm btn-delete" style="padding:9px 20px">Hủy</a>
+        </div>
+    </form>
+</div>

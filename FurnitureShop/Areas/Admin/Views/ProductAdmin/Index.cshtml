@@ -1,0 +1,58 @@
+﻿@model List<FurnitureShop.DTO.ProductDTO>
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-table-wrap">
+    <div class="admin-table-header">
+        <form method="get" class="search-bar">
+            <input type="text" name="keyword" value="@ViewBag.Keyword" placeholder="Tìm tên sản phẩm..." />
+            <button type="submit">Tìm</button>
+        </form>
+        <a asp-area="Admin" asp-controller="ProductAdmin"
+           asp-action="Edit" class="btn-primary-sm">
+            + Thêm sản phẩm
+        </a>
+    </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Giá</th>
+                <th>Giảm</th>
+                <th>Tồn kho</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@p.ImageURL" class="product-thumb"
+                             onerror="this.src='/images/no-image.jpg'" />
+                    </td>
+                    <td><strong>@p.ProductName</strong></td>
+                    <td>@p.CategoryName</td>
+                    <td>@p.Price.ToString("N0") ₫</td>
+                    <td>@(p.Discount > 0 ? $"-{p.Discount}%" : "-")</td>
+                    <td>@p.Stock</td>
+                    <td>
+                        <a asp-area="Admin" asp-controller="ProductAdmin"
+                           asp-action="Edit" asp-route-id="@p.ProductID"
+                           class="btn-sm btn-edit">Sửa</a>
+                        <form asp-area="Admin" asp-controller="ProductAdmin"
+                              asp-action="Delete" method="post" style="display:inline"
+                              onsubmit="return confirm('Xóa sản phẩm này?')">
+                            <input type="hidden" name="id" value="@p.ProductID" />
+                            <button type="submit" class="btn-sm btn-delete">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

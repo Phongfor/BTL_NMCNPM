@@ -1,0 +1,16 @@
+﻿@model FurnitureShop.DTO.OrderDTO
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<section class="success-section">
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h2>Đặt hàng thành công!</h2>
+        <p>Cảm ơn bạn đã mua hàng. Đơn hàng <strong>#@Model?.OrderID</strong> đang được xử lý.</p>
+        <div style="display:flex;gap:16px;justify-content:center">
+            <a asp-controller="Order" asp-action="MyOrders" class="btn-outline">Xem đơn hàng</a>
+            <a asp-controller="Home" asp-action="Index" class="btn-primary">Tiếp tục mua sắm</a>
+        </div>
+    </div>
+</section>

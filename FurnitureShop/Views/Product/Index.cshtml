@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<div class="container shop-layout">
+    <aside class="sidebar">
+        <form method="get" asp-controller="Product" asp-action="Index">
+            <div class="filter-group">
+                <h3>Tìm kiếm</h3>
+                <input type="text" name="keyword" value="@ViewBag.Keyword"
+                       placeholder="Nhập tên sản phẩm..."
+                       style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:14px" />
+            </div>
+            <div class="filter-group">
+                <h3>Danh mục</h3>
+                <label>
+                    <input type="radio" name="categoryId" value=""
+                           @(ViewBag.CategoryId == null ? "checked" : "") /> Tất cả
+                </label>
+                @foreach (var cat in ViewBag.Categories)
+                {
+                    <label>
+                        <input type="radio" name="categoryId" value="@cat.CategoryID"
+                               @(ViewBag.CategoryId != null && ViewBag.CategoryId == cat.CategoryID ? "checked" : "") />
+                        @cat.CategoryName
+                    </label>
+                }
+            </div>
+            <div class="filter-group">
+                <h3>Khoảng giá (₫)</h3>
+                <div class="price-inputs">
+                    <input type="number" name="minPrice" value="@ViewBag.MinPrice" placeholder="Từ" />
+                    <span>—</span>
+                    <input type="number" name="maxPrice" value="@ViewBag.MaxPrice" placeholder="Đến" />
+                </div>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;margin-top:8px">Lọc kết quả</button>
+            <a asp-controller="Product" asp-action="Index"
+               style="display:block;text-align:center;margin-top:10px;font-size:13px;color:var(--text-light)">
+                Xóa bộ lọc
+            </a>
+        </form>
+    </aside>
+
+    <div class="shop-main">
+        <div class="shop-toolbar">
+            <span class="result-count">
+                Tìm thấy <strong>@((ViewBag.Products as IEnumerable<dynamic>)?.Count() ?? 0)</strong> sản phẩm
+            </span>
+            <form method="get" asp-controller="Product" asp-action="Index">
+                <input type="hidden" name="keyword"    value="@ViewBag.Keyword" />
+                <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+                <input type="hidden" name="minPrice"   value="@ViewBag.MinPrice" />
+                <input type="hidden" name="maxPrice"   value="@ViewBag.MaxPrice" />
+                <select name="sortBy" onchange="this.form.submit()">
+                    <option value="newest" selected="@(ViewBag.SortBy == "newest" ? "selected" : null)">Mới nhất</option>
+                    <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc" ? "selected" : null)">Giá tăng dần</option>
+                    <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc" ? "selected" : null)">Giá giảm dần</option>
+                    <option value="name_asc" selected="@(ViewBag.SortBy == "name_asc" ? "selected" : null)">Tên A-Z</option>
+                </select>
+            </form>
+        </div>
+
+        @if ((ViewBag.Products as IEnumerable<dynamic>)?.Any() == true)
+        {
+            <div class="products-grid">
+                @foreach (var p in ViewBag.Products)
+                {
+                    <div class="product-card">
+                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                            <div class="product-img-wrap">
+                                <img class="product-img" src="@p.ImageURL" alt="@p.ProductName"
+                                     onerror="this.src='/images/no-image.jpg'" />
+                            </div>
+                        </a>
+                        <div class="product-body">
+                            <div class="product-category">@p.CategoryName</div>
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                                <div class="product-name">@p.ProductName</div>
+                            </a>
+                            <div class="product-price">
+                                <span class="price-sale">@p.SalePrice.ToString("N0") ₫</span>
+                                @if (p.Discount > 0)
+                                {
+                                    <span class="price-old">@p.Price.ToString("N0") ₫</span>
+                                    <span class="badge-discount">-@p.Discount%</span>
+                                }
+                            </div>
+                            <div class="product-actions">
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@p.ProductID" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn-primary">Thêm giỏ</button>
+                                </form>
+                                <a asp-controller="Product" asp-action="Detail"
+                                   asp-route-id="@p.ProductID" class="btn-outline">Chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (ViewBag.TotalPages > 1)
+            {
+                <div class="pagination">
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a asp-controller="Product" asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-keyword="@ViewBag.Keyword"
+                           asp-route-categoryId="@ViewBag.CategoryId"
+                           asp-route-sortBy="@ViewBag.SortBy"
+                           class="@(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div style="text-align:center;padding:60px 0;color:var(--text-light)">
+                <p style="font-size:16px">Không tìm thấy sản phẩm phù hợp.</p>
+                <a asp-controller="Product" asp-action="Index"
+                   class="btn-outline" style="display:inline-block;margin-top:16px">Xem tất cả</a>
+            </div>
+        }
+    </div>
+</div>
